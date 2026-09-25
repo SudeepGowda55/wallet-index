@@ -20,8 +20,8 @@
 | **Aqua**: ship / dock / push, shared liquidity | [script/Deploy.s.sol](script/Deploy.s.sol), [script/Retune.s.sol](script/Retune.s.sol), [src/hooks/WalletIndexHook.sol](src/hooks/WalletIndexHook.sol) L95 | official Aqua `0x1111113C…a90a`, official router `0x11111133…0De` |
 | **Uniswap v4 hook**: best-quote routing across wallets | [src/hooks/WalletIndexHook.sol](src/hooks/WalletIndexHook.sol) | `bestQuote` L71, `_fillFromExternalLiquidity` L82, `list/replace/delist` L45–64 |
 | **Uniswap v4**: pool filled from external liquidity | [src/hooks/AsyncLiquidityHook.sol](src/hooks/AsyncLiquidityHook.sol) | `_beforeSwap` L169, `sweepClaims` L202, permissions L219 |
-| Agent (live prices → on-chain retunes → sweeps) | [agent/agent.py](agent/agent.py) | |
-| UI | [ui/index.html](ui/index.html) | |
+| Agent (live prices → on-chain retunes → sweeps) | [frontend/scripts/agent.ts](frontend/scripts/agent.ts) | |
+| UI (Next.js 16 + React 19 + ethers v6) | [frontend/app/page.tsx](frontend/app/page.tsx), [frontend/components/](frontend/components/), [frontend/lib/chain.ts](frontend/lib/chain.ts) | |
 
 Contracts used on Base mainnet: Aqua `0x1111113CCf1426A8E30e2bfF5E005d929bF6a90a`, official AquaSwapVMRouter `0x111111338c5091E8440b67B168bAe16a668AC0De`, Uniswap v4 PoolManager `0x498581fF718922c3f8e6A244956aF099B2652b2b`, Chainlink ETH/USD `0x7104…Bb70`, BTC/USD `0x07DA…A59f9D`.
 
@@ -42,7 +42,7 @@ Contracts used on Base mainnet: Aqua `0x1111113CCf1426A8E30e2bfF5E005d929bF6a90a
 
 ## Run it
 
-Requirements: [Foundry](https://getfoundry.sh), Python 3, Node is **not** required.
+Requirements: [Foundry](https://getfoundry.sh), Node 20+ (for the Next.js UI in `frontend/`, built automatically by `start_local.sh`). After cloning run `./scripts/setup.sh` (submodules + swap-vm JS deps + build).
 
 ```bash
 ./scripts/test_all.sh        # build + all fork tests + local environment + end-to-end check (leaves it running)
@@ -53,7 +53,7 @@ open http://localhost:8787/
 ### Terminal demo (real transactions, printed tx hashes)
 
 ```bash
-python3 scripts/demo.py          # PAUSE=1 to step through while presenting
+(cd frontend && npm run demo)          # PAUSE=1 to step through while presenting
 ```
 
 Walks the whole story: live price → the three wallets and their live costs → the SwapVM program with opcode 34 → a Uniswap v4 swap and which wallet filled it → routing moving to the next wallet → a direct trade on the official 1inch router from the same wallet → the agent retuning every wallet on-chain for a jumpy then calm market → a stale price freezing every wallet.
@@ -74,8 +74,8 @@ Base mainnet (tiny sizes, ~₹1000 of inventory that stays in your wallets, ~$0.
 ```bash
 cp .env.example .env   # fill in keys; makers hold small WETH/USDC/cbBTC
 forge build && ./scripts/deploy_mainnet.sh
-set -a; source .env; set +a; NETWORK=mainnet python3 agent/agent.py
-open "http://localhost:8787/?net=mainnet"   # after: python3 scripts/serve.py 8787
+set -a; source .env; set +a; (cd frontend && NETWORK=mainnet npx tsx scripts/agent.ts)
+open "http://localhost:8787/?net=mainnet"   # after: (cd frontend && npm run build && WI_ROOT=.. npx next start -p 8787)
 ```
 
 ## Honest notes

@@ -24,3 +24,7 @@ package-lock.json
 .vscode/
 .idea/
 __pycache__/
+
+# Next.js
+frontend/.next/
+*.tsbuildinfo

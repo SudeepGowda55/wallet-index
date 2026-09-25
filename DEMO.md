@@ -15,11 +15,11 @@ Before going on stage: `./scripts/start_local.sh` (or the mainnet deployment), o
 | 6 | **Terminal** | `curl -s localhost:8787/api/wallets \| jq '.wallets[] \| {name, ethWeightPct, ethTargetPct}'` | "The API confirms the rebalancing the UI just showed." |
 | 7 | **UI** | Point at the *SwapVM program* panel | "This is the actual SwapVM bytecode: a salt, then opcode 34, our new instruction added to 1inch's VM, then the wallet's settings." |
 | 8 | **UI** | Click **Buy directly on the official 1inch router** | "Same wallet, a second strategy, 1inch's own unmodified router. One balance backs both. Nothing moved between them." |
-| 9 | **Terminal** | `kill $(cat .run/agent.pid); NETWORK=local INTERVAL=3 SCENARIO=60,20 python3 agent/agent.py 2` | "The agent reads live Base prices. Jumpy market: it widens every wallet's fee on-chain. Calm: back to normal." |
+| 9 | **Terminal** | `pkill -f scripts/agent.ts; (cd frontend && NETWORK=local INTERVAL=3 SCENARIO=60,20 npx tsx scripts/agent.ts 2)` | "The agent reads live Base prices. Jumpy market: it widens every wallet's fee on-chain. Calm: back to normal." |
 | 10 | **UI** | Pop-ups *"Retune … from agent"*, the spreads on the cards, the *Agent decisions* panel | "Every retune is a real Aqua transaction: retire the old strategy, ship the new one, swap the listing. The cards show the new fees." |
-| 11 | **Terminal** | `python3 scripts/stale_demo.py` | "And if the price ever goes stale, every wallet refuses to quote: nobody can trade against an old price. Fresh again: trading resumes." |
-| 12 | **Terminal** | `NETWORK=local nohup python3 agent/agent.py >> .run/agent.log 2>&1 & echo $! > .run/agent.pid` | (restart the background agent) |
+| 11 | **Terminal** | `(cd frontend && npm run stale-demo)` | "And if the price ever goes stale, every wallet refuses to quote: nobody can trade against an old price. Fresh again: trading resumes." |
+| 12 | **Terminal** | `(cd frontend && NETWORK=local nohup node --import tsx scripts/agent.ts >> ../.run/agent.log 2>&1 & echo $! > ../.run/agent.pid)` | (restart the background agent) |
 
-**Fallback / scripted version:** `PAUSE=1 python3 scripts/demo.py` walks all 8 steps in the terminal with the same UI cues printed after each one ("`>> in the UI: …`").
+**Fallback / scripted version:** `PAUSE=1 (cd frontend && npm run demo)` walks all 8 steps in the terminal with the same UI cues printed after each one ("`>> in the UI: …`").
 
 **Evidence slide (recorded, not live):** EUR→JPY on real Ethereum state: $50k costs 158 bps via today's two-hop route vs 15 bps from a WalletIndex basket; JPY→SGD / JPY→CHF (no pool exists) fill within 0.2% of the live rate. Run `forge test --match-contract FxEvidenceEthereumTest -vv` to reproduce.

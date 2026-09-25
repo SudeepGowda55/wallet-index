@@ -6,7 +6,7 @@ Every check below runs against **real deployed contracts** (1inch Aqua, SwapVM, 
 
 ```bash
 curl -L https://foundry.paradigm.xyz | bash && foundryup   # forge, cast, anvil
-python3 --version                                           # 3.9+
+node --version                                              # 20+
 cd walletindex && forge build
 ```
 
@@ -85,13 +85,13 @@ Force the agent through market regimes to see on-chain retunes immediately:
 
 ```bash
 kill $(cat .run/agent.pid)
-NETWORK=local INTERVAL=5 SCENARIO="5,60,5,20" python3 agent/agent.py 4   # calm, jumpy, calm, normal
+(cd frontend && NETWORK=local INTERVAL=5 SCENARIO="5,60,5,20" npx tsx scripts/agent.ts 4)   # calm, jumpy, calm, normal
 ```
 
 Verify anything on-chain yourself with `cast`:
 
 ```bash
-R=http://127.0.0.1:8545; HOOK=$(python3 -c "import json;print(json.load(open('deployments/local.json'))['hook'])")
+R=http://127.0.0.1:8545; HOOK=$(node -p "require('./deployments/local.json').hook")
 cast call $HOOK "count()(uint256)" --rpc-url $R
 cast call $HOOK "bestQuote(address,address,uint256)(uint256,uint256)" 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 0x4200000000000000000000000000000000000006 500000000 --rpc-url $R
 ```
@@ -99,7 +99,7 @@ cast call $HOOK "bestQuote(address,address,uint256)(uint256,uint256)" 0x833589fC
 ## 4. Terminal demo and API
 
 ```bash
-python3 scripts/demo.py                                         # 8 steps, real transactions, tx hashes printed
+(cd frontend && npm run demo)                                         # 8 steps, real transactions, tx hashes printed
 curl http://localhost:8787/api/status
 curl "http://localhost:8787/api/wallets?usd=500"
 curl "http://localhost:8787/api/quote?side=buy&usd=500"
@@ -115,7 +115,7 @@ See the README. Dry-run the exact mainnet script against the local fork first (`
 ## 6. Supporting evidence scripts
 
 ```bash
-python3 analysis/fx_pool_overpay.py 6   # what real FX-stablecoin swappers paid vs the FX rate on today's pools
+(cd frontend && npm run fx-evidence -- 6)   # what real FX-stablecoin swappers paid vs the FX rate on today's pools
 ```
 
 ## Known limits
