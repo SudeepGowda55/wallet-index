@@ -1,0 +1,26 @@
+# Foundry build output and local broadcast logs (local-fork runs only)
+out/
+cache/
+broadcast/
+
+# Runtime files from scripts/start_local.sh: fork/agent/UI logs, pids, screenshots, archived vendored libs
+.run/
+
+# Local-fork deployments hold throwaway anvil test keys and change on every restart
+deployments/local*.json
+deployments/dryrun*.json
+
+# Node
+node_modules/
+package-lock.json
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+__pycache__/

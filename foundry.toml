@@ -1,0 +1,25 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+optimizer = true
+optimizer_runs = 700
+via_ir = true
+allow_internal_expect_revert = true
+ffi = true
+fs_permissions = [{ access = "read", path = "out/" }]
+remappings = [
+    "forge-std/=lib/forge-std/src/",
+    "@1inch/swap-vm/=lib/swap-vm/",
+    "@1inch/aqua/=lib/aqua/",
+    "@openzeppelin/contracts/=lib/swap-vm/node_modules/@openzeppelin/contracts/",
+    "@1inch/solidity-utils/=lib/swap-vm/node_modules/@1inch/solidity-utils/",
+    "uniswap-hooks/=lib/uniswap-hooks/",
+    "@uniswap/v4-core/=lib/uniswap-hooks/lib/v4-core/",
+    "@uniswap/v4-periphery/=lib/uniswap-hooks/lib/v4-periphery/",
+]
+additional_compiler_profiles = [{ name = "v4core", via_ir = true, optimizer_runs = 44444444 }]
+compilation_restrictions = [{ paths = "lib/uniswap-hooks/lib/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 }]
+
+[fuzz]
+runs = 128
