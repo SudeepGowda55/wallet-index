@@ -28,7 +28,7 @@ fund() { # addr usdc6 ethWei btcSats pk
   cast send $USDC "transfer(address,uint256)" "$1" "$2" --from $PM --unlocked --rpc-url $R >/dev/null
   [ "$4" != 0 ] && cast send $BTC "transfer(address,uint256)" "$1" "$4" --from $PM --unlocked --rpc-url $R >/dev/null
   [ "$3" != 0 ] && cast send $WETH "deposit()" --value "$3" --private-key "$5" --rpc-url $R >/dev/null; true; }
-MAKER_ETH=$(python3 -c "print(int(5000e6*1e20/$ETHPX))"); MAKER_BTC=$(python3 -c "print(int(2000e6*1e10/$BTCPX))")
+MAKER_ETH=$(node -p "BigInt(Math.floor(5000e6*1e20/$ETHPX)).toString()"); MAKER_BTC=$(node -p "BigInt(Math.floor(2000e6*1e10/$BTCPX)).toString()")
 fund "$(addr $DK)" 20000000000 5000000000000000000 0 "$DK"
 for k in "$M1" "$M2" "$M3"; do fund "$(addr $k)" 3000000000 "$MAKER_ETH" "$MAKER_BTC" "$k"; done
 fund "$(addr $TK)" 50000000000 10000000000000000000 0 "$TK"
@@ -37,7 +37,7 @@ fund "$(addr $CK)" 50000000000 10000000000000000000 0 "$CK"
 cast send $USDC "approve(address,uint256)" 0x0000000000000000000000000000000000000000 0 --private-key "$TK" --rpc-url $R >/dev/null 2>&1 || true
 
 echo "3/6 deploying MirrorFeeds (fork only) seeded with the live Chainlink answers"
-create() { local bc=$(python3 -c "import json;print(json.load(open('out/$1.sol/$1.json'))['bytecode']['object'])"); cast send --private-key "$DK" --rpc-url $R --json --create "${bc}${2:2}" | python3 -c "import sys,json;print(json.load(sys.stdin)['contractAddress'])"; }
+create() { local bc=$(node -p "require('./out/$1.sol/$1.json').bytecode.object"); cast send --private-key "$DK" --rpc-url $R --json --create "${bc}${2:2}" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).contractAddress))"; }
 FEED_ETH=$(create MirrorFeed "$(cast abi-encode 'c(address,string,int256)' "$(addr $DK)" 'ETH / USD (mirror of live Chainlink)' "$ETHPX")")
 FEED_BTC=$(create MirrorFeed "$(cast abi-encode 'c(address,string,int256)' "$(addr $DK)" 'BTC / USD (mirror of live Chainlink)' "$BTCPX")")
 
@@ -66,11 +66,12 @@ JSON
 rm -f deployments/local.state.json
 echo "   router $ROUTER | hook $HOOK | swapper $SWAPPER"
 
-echo "6/6 starting agent (every ${INTERVAL:-30}s) and UI"
-NETWORK=local INTERVAL=${INTERVAL:-30} nohup python3 agent/agent.py > "$RUN/agent.log" 2>&1 &
-echo $! > "$RUN/agent.pid"
-nohup python3 scripts/serve.py "$UI_PORT" > "$RUN/ui.log" 2>&1 &
-echo $! > "$RUN/ui.pid"
+echo "6/6 starting agent (every ${INTERVAL:-30}s) and the Next.js UI + API"
+[ -d frontend/node_modules ] || (cd frontend && npm install --no-audit --no-fund >/dev/null)
+[ -f frontend/.next/BUILD_ID ] || (cd frontend && npm run build >/dev/null)
+(cd frontend && NETWORK=local INTERVAL=${INTERVAL:-30} nohup node --import tsx scripts/agent.ts > "$RUN/agent.log" 2>&1 & echo $! > "$RUN/agent.pid")
+(cd frontend && WI_ROOT="$ROOT" nohup npx next start -p "$UI_PORT" > "$RUN/ui.log" 2>&1 & echo $! > "$RUN/ui.pid")
+for _ in $(seq 1 60); do curl -s -o /dev/null "http://localhost:$UI_PORT/api/status" && break; sleep 1; done
 echo
-echo "READY. UI: http://localhost:$UI_PORT/   |   fork RPC: $R   |   agent log: $RUN/agent.log"
+echo "READY. UI (Next.js): http://localhost:$UI_PORT/   API: http://localhost:$UI_PORT/api/status    |   fork RPC: $R   |   agent log: $RUN/agent.log"
 echo "Stop everything with: ./scripts/stop_local.sh"

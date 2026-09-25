@@ -9,9 +9,9 @@ R=${RPC_URL:-$BASE_RPC}; NETNAME=${NETNAME:-mainnet}
 WETH=0x4200000000000000000000000000000000000006
 DA=$(cast wallet address "$DEPLOYER_PK")
 echo "network: $R (chain $(cast chain-id --rpc-url $R)) | deployer $DA | gas price $(cast gas-price --rpc-url $R) wei"
-bc=$(python3 -c "import json;print(json.load(open('out/WalletIndexRouter.sol/WalletIndexRouter.json'))['bytecode']['object'])")
+bc=$(node -p "require('./out/WalletIndexRouter.sol/WalletIndexRouter.json').bytecode.object")
 args=$(cast abi-encode 'c(address,address,address,string,string)' 0x1111113CCf1426A8E30e2bfF5E005d929bF6a90a $WETH "$DA" WalletIndex 1)
-ROUTER=$(cast send --private-key "$DEPLOYER_PK" --rpc-url $R --json --create "${bc}${args:2}" | python3 -c "import sys,json;print(json.load(sys.stdin)['contractAddress'])")
+ROUTER=$(cast send --private-key "$DEPLOYER_PK" --rpc-url $R --json --create "${bc}${args:2}" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).contractAddress))")
 echo "router $ROUTER"
 BLK=$(cast block-number --rpc-url $R)
 OUT=$(ROUTER=$ROUTER FLOAT_USDC=$FLOAT_USDC FLOAT_WETH=$FLOAT_WETH forge script script/Deploy.s.sol --rpc-url $R --broadcast --slow 2>&1)
@@ -27,5 +27,5 @@ cat > deployments/$NETNAME.json <<JSON
  "trader":"$([ -n "${TRADER_PK:-}" ] && cast wallet address $TRADER_PK || echo "")"}
 JSON
 echo "hook $HOOK | swapper $SWAPPER -> deployments/$NETNAME.json (no keys written)"
-echo "UI: python3 scripts/serve.py 8787, then open http://localhost:8787/?net=$NETNAME"
-echo "run the agent:  set -a; source .env; set +a; NETWORK=$NETNAME python3 agent/agent.py"
+echo "UI + API: (cd frontend && npm run build && WI_ROOT=$(pwd) npx next start -p 8787), then open http://localhost:8787/?net=$NETNAME"
+echo "run the agent:  set -a; source .env; set +a; (cd frontend && NETWORK=$NETNAME npx tsx scripts/agent.ts)"

@@ -11,11 +11,11 @@ forge test -j 1 2>&1 | tee .run/forge-test.log | grep -E "^Ran [0-9]+ test|Suite
 echo "== 3/4 local environment"
 if [ -f .run/anvil.pid ] && kill -0 "$(cat .run/anvil.pid)" 2>/dev/null && [ -f deployments/local.json ]; then echo "  already running"; else ./scripts/start_local.sh || exit 1; fi
 echo "== 4/4 end-to-end check on the running environment"
-[ -f .run/agent.pid ] && kill "$(cat .run/agent.pid)" 2>/dev/null; rm -f .run/agent.pid
-python3 scripts/e2e_check.py || FAIL=1
+[ -f .run/agent.pid ] && kill "$(cat .run/agent.pid)" 2>/dev/null; pkill -f "scripts/agent.ts" 2>/dev/null; rm -f .run/agent.pid
+(cd frontend && npx tsx scripts/e2e-check.ts) || FAIL=1
 echo "== terminal demo"
-python3 scripts/demo.py > .run/demo.out 2>&1 && grep -q "Done." .run/demo.out && echo "  [PASS] terminal demo ran all 8 steps (output: .run/demo.out)" || { echo "  [FAIL] terminal demo (see .run/demo.out)"; FAIL=1; }
-NETWORK=local INTERVAL=${INTERVAL:-30} nohup python3 agent/agent.py >> .run/agent.log 2>&1 & echo $! > .run/agent.pid
+(cd frontend && npx tsx scripts/demo.ts) > .run/demo.out 2>&1 && grep -q "Done." .run/demo.out && echo "  [PASS] terminal demo ran all 8 steps (output: .run/demo.out)" || { echo "  [FAIL] terminal demo (see .run/demo.out)"; FAIL=1; }
+(cd frontend && NETWORK=local INTERVAL=${INTERVAL:-30} nohup node --import tsx scripts/agent.ts >> ../.run/agent.log 2>&1 & echo $! > ../.run/agent.pid)
 echo
 [ $FAIL = 0 ] && echo "ALL CHECKS PASSED." || echo "SOME CHECKS FAILED (see above)."
 echo "Environment still running -> UI: http://localhost:${UI_PORT:-8787}/   stop: ./scripts/stop_local.sh"
