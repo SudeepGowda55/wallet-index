@@ -53,7 +53,7 @@ open http://localhost:8787/
 ### Terminal demo (real transactions, printed tx hashes)
 
 ```bash
-(cd frontend && npm run demo)          # PAUSE=1 to step through while presenting
+(cd frontend && npm run demo)         
 ```
 
 Walks the whole story: live price → the three wallets and their live costs → the SwapVM program with opcode 34 → a Uniswap v4 swap and which wallet filled it → routing moving to the next wallet → a direct trade on the official 1inch router from the same wallet → the agent retuning every wallet on-chain for a jumpy then calm market → a stale price freezing every wallet.
