@@ -2,8 +2,7 @@
 export const SITE = {
   name: "WalletIndex",
   pitch: "Your wallet becomes a market maker on Uniswap v4. 1inch Aqua keeps the money in your wallet; a new SwapVM instruction charges less for trades that rebalance you.",
-  // shortcut: falls back to the local UI port, set NEXT_PUBLIC_SITE_URL to the production domain before deploying
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:8787",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://wallet-index.vercel.app",
   repo: "https://github.com/SudeepGowda55/wallet-index",
 };
 export const OG_IMAGE = { url: "/og.png", width: 1200, height: 627 };
