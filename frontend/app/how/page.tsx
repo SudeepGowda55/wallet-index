@@ -1,6 +1,7 @@
 import { Split } from "@/components/site/Kinetic";
 import { FlowCycle, Simulator } from "@/components/site/HowParts";
 import { Footer } from "@/components/site/Home";
+import PageTerrain from "@/components/site/PageTerrain";
 import { pageMeta } from "@/lib/site";
 
 export const metadata = pageMeta("/how", "How it works", "How a Uniswap v4 swap is routed to the cheapest wallet, and how opcode 34 prices it off the whole portfolio.");
@@ -10,6 +11,7 @@ const ARGS = [["base", "2 B", "spread with no rebalancing effect"], ["min · max
 
 export default function Page() {
   return <main className="page">
+    <PageTerrain />
     <header className="wrap pagehead">
       <span className="eyebrow" data-reveal>How it works</span>
       <Split parts={["One swap,", ["every wallet", "hl"], "asked,", ["the cheapest", "hl2"], "fills."]} />
@@ -17,13 +19,13 @@ export default function Page() {
     </header>
     <section className="wrap block"><FlowCycle /></section>
     <section className="wrap block">
-      <span className="eyebrow" data-reveal>§ Opcode 34 · try it</span>
+      <span className="eyebrow" data-reveal>Opcode 34 · try it</span>
       <Split as="h2" parts={["Push a wallet off target and", ["watch the price", "hl"], "lean back."]} />
       <p className="lede" data-reveal>The instruction values the whole basket at Chainlink prices, measures how far it sits from its targets before and after the trade, and moves the spread by the difference. The wallet is paid to rebalance.</p>
       <Simulator />
     </section>
     <section className="wrap block">
-      <span className="eyebrow" data-reveal>§ The program</span>
+      <span className="eyebrow" data-reveal>The program</span>
       <Split as="h2" parts={["Everything the wallet needs,", ["in its own bytecode.", "hl"]]} />
       <div className="grid g-2">
         <div className="panel" data-reveal>

@@ -33,7 +33,7 @@ export function Simulator() {
     </div>
     <div className="sim-out">
       <div className="mix">{ASSETS.map((a, i) => <div key={a} className="asset"><span className="t2">{a}</span>
-        <div className="track"><span style={{ width: `${Math.max(0, w[i])}%`, background: ["#4f5df0", "#1f9a8a", "#ee8a26"][i] }} /><i style={{ left: `${m.targets[i] / 100}%` }} /></div>
+        <div className="track"><span style={{ width: `${Math.max(0, w[i])}%`, background: ["var(--eth)", "var(--usdc)", "var(--btc)"][i] }} /><i style={{ left: `${m.targets[i] / 100}%` }} /></div>
         <span className="v mono">{fmt(w[i], 0)}% <span className="muted">/ {m.targets[i] / 100}%</span></span></div>)}</div>
       <Bar label="Trader buys ETH from the wallet" v={buy} help={buy < m.base} />
       <Bar label="Trader sells ETH to the wallet" v={sell} help={sell < m.base} />

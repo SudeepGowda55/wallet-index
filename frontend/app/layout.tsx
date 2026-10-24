@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, IBM_Plex_Mono, Inter_Tight } from "next/font/google";
+import { Martian_Mono, Onest, Unbounded } from "next/font/google";
 import Shell from "@/components/site/Shell";
 import { OG_IMAGE, SITE } from "@/lib/site";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--f-display", weight: ["400", "600", "800"] });
-const body = Inter_Tight({ subsets: ["latin"], variable: "--f-body" });
-const mono = IBM_Plex_Mono({ subsets: ["latin"], variable: "--f-mono", weight: ["400", "500", "600"] });
+const display = Unbounded({ subsets: ["latin"], variable: "--f-display", weight: ["300", "400", "500", "600"] });
+const body = Onest({ subsets: ["latin"], variable: "--f-body" });
+const mono = Martian_Mono({ subsets: ["latin"], variable: "--f-mono", weight: ["400", "500", "600"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
