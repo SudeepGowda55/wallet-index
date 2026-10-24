@@ -86,7 +86,7 @@ export function Agent({ state }: { state: any }) {
         <div className="kv"><span className="k">Rule</span><span className="v t2">calm &lt;15 bps → tighten · normal · jumpy ≥40 bps → widen</span></div>
         <div className="kv"><span className="k">Last tick</span><span className="v">{last ? `tick ${last.tick} · ${new Date(last.t * 1000).toLocaleTimeString()}` : "–"}</span></div>
         <div className="kv"><span className="k">Keeper</span><span className="v">{last && (last.swept || []).length ? `swept ${last.swept.map((s: any) => s[0]).join(" & ")} claims back into the hook float` : "float healthy"}</span></div></div>
-      <div className="panel"><h3>Decision timeline</h3><div className="feed">{evs.length ? evs.slice(-25).reverse().map((ev: any) => {
+      <div className="panel"><h3>Decision timeline</h3><div className="feed" data-lenis-prevent>{evs.length ? evs.slice(-25).reverse().map((ev: any) => {
         const ds = (ev.decisions || []).map((x: any) => `${x.maker} ${x.from}→${x.to} bps${x.ok ? "" : " (failed)"}`).join(", "), r = regime(ev.live.move_bps);
         return <div key={ev.t + "-" + ev.tick} className="ev"><span className="good">tick {ev.tick}</span> · {new Date(ev.t * 1000).toLocaleTimeString()} · ETH ${fmt(ev.live.eth / 1e8)} · move {ev.live.move_bps} bps{ev.scenario !== undefined ? " (scenario)" : ""} · <span className={r.cls}>{r.name}</span> → {ds || "no change"}{(ev.swept || []).length ? ` · swept ${ev.swept.map((s: any) => s[0]).join(" & ")}` : ""}{ev.trade ? ` · simulated trader: ${ev.trade.what}` : ""}</div>;
       }) : <div className="empty">waiting for the agent…</div>}</div></div>
@@ -112,7 +112,7 @@ export function ApiConsole({ net, onPost }: { net: string; onPost: () => void })
   };
   return <div className="panel">
     <div className="row">{calls.map(([m, p, label]) => <button key={label} className={m === "POST" ? "primary" : ""} onClick={() => call(m, p)}>{label}</button>)}</div>
-    <div className="code" style={{ marginTop: 12 }}>{curl}</div><pre className="json">{out}</pre></div>;
+    <div className="code" style={{ marginTop: 12 }}>{curl}</div><pre className="json" data-lenis-prevent>{out}</pre></div>;
 }
 
 export function Evidence() {

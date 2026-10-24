@@ -21,7 +21,7 @@
 | **Uniswap v4 hook**: best-quote routing across wallets | [src/hooks/WalletIndexHook.sol](src/hooks/WalletIndexHook.sol) | `bestQuote` L71, `_fillFromExternalLiquidity` L82, `list/replace/delist` L45–64 |
 | **Uniswap v4**: pool filled from external liquidity | [src/hooks/AsyncLiquidityHook.sol](src/hooks/AsyncLiquidityHook.sol) | `_beforeSwap` L169, `sweepClaims` L202, permissions L219 |
 | Agent (live prices → on-chain retunes → sweeps) | [frontend/scripts/agent.ts](frontend/scripts/agent.ts) | |
-| UI (Next.js 16 + React 19 + ethers v6) | [frontend/app/page.tsx](frontend/app/page.tsx), [frontend/components/](frontend/components/), [frontend/lib/chain.ts](frontend/lib/chain.ts) | |
+| UI (Next.js 16 + React 19 + ethers v6, three.js + GSAP) | [frontend/app/live/Dashboard.tsx](frontend/app/live/Dashboard.tsx), [frontend/components/](frontend/components/), [frontend/lib/chain.ts](frontend/lib/chain.ts) | |
 
 Contracts used on Base mainnet: Aqua `0x1111113CCf1426A8E30e2bfF5E005d929bF6a90a`, official AquaSwapVMRouter `0x111111338c5091E8440b67B168bAe16a668AC0De`, Uniswap v4 PoolManager `0x498581fF718922c3f8e6A244956aF099B2652b2b`, Chainlink ETH/USD `0x7104…Bb70`, BTC/USD `0x07DA…A59f9D`.
 
@@ -46,7 +46,7 @@ Requirements: [Foundry](https://getfoundry.sh), Node 20+ (for the Next.js UI in 
 
 ```bash
 ./scripts/test_all.sh        # build + all fork tests + local environment + end-to-end check (leaves it running)
-open http://localhost:8787/
+open http://localhost:8787/live     # live dashboard; the story site is at /
 ./scripts/stop_local.sh      # stop the fork, agent and UI
 ```
 
@@ -75,7 +75,7 @@ Base mainnet (tiny sizes, ~₹1000 of inventory that stays in your wallets, ~$0.
 cp .env.example .env   # fill in keys; makers hold small WETH/USDC/cbBTC
 forge build && ./scripts/deploy_mainnet.sh
 set -a; source .env; set +a; (cd frontend && NETWORK=mainnet npx tsx scripts/agent.ts)
-open "http://localhost:8787/?net=mainnet"   # after: (cd frontend && npm run build && WI_ROOT=.. npx next start -p 8787)
+open "http://localhost:8787/live?net=mainnet"   # after: (cd frontend && npm run build && WI_ROOT=.. npx next start -p 8787)
 ```
 
 ## Honest notes

@@ -73,5 +73,5 @@ echo "6/6 starting agent (every ${INTERVAL:-30}s) and the Next.js UI + API"
 (cd frontend && WI_ROOT="$ROOT" nohup npx next start -p "$UI_PORT" > "$RUN/ui.log" 2>&1 & echo $! > "$RUN/ui.pid")
 for _ in $(seq 1 60); do curl -s -o /dev/null "http://localhost:$UI_PORT/api/status" && break; sleep 1; done
 echo
-echo "READY. UI (Next.js): http://localhost:$UI_PORT/   API: http://localhost:$UI_PORT/api/status    |   fork RPC: $R   |   agent log: $RUN/agent.log"
+echo "READY. UI (Next.js): http://localhost:$UI_PORT/live   API: http://localhost:$UI_PORT/api/status    |   fork RPC: $R   |   agent log: $RUN/agent.log"
 echo "Stop everything with: ./scripts/stop_local.sh"

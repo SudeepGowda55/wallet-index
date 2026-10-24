@@ -37,7 +37,7 @@ Ran 5 test suites ...: 25 tests passed, 0 failed
 ALL CHECKS PASSED.
 ```
 
-The local environment keeps running afterwards: fork RPC `http://127.0.0.1:8545`, UI `http://localhost:8787/`.
+The local environment keeps running afterwards: fork RPC `http://127.0.0.1:8545`, UI `http://localhost:8787/live`.
 
 ## 2. The test suites, one by one
 
@@ -65,7 +65,7 @@ tail -f .run/agent.log       # the agent's ticks: live prices, decisions, retune
 ./scripts/stop_local.sh
 ```
 
-In the UI (`http://localhost:8787/`) check:
+In the UI (`http://localhost:8787/live`) check:
 
 1. **Market**: live Base mainnet ETH/USD, the price the wallets use, and its freshness (green = fresh).
 2. **Wallet cards**: balances, ETH weight vs target, the base spread the agent set, the live cost to buy/sell $500 at each wallet; the cheapest is highlighted.

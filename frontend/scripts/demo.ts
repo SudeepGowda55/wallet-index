@@ -89,7 +89,7 @@ async function main() {
   const q2 = await apiQuote("local", "buy", 500);
   console.log(`  price fresh again     -> pool quote fillable: ${G}${q2.fillable}${X} (best: ${(q2 as any).bestWallet})`);
   ui("the freshness tile stays green: the snapshot was reverted");
-  console.log(`\n${B}${G}Done.${X} UI: http://localhost:8787/   API: curl http://localhost:8787/api/status`);
+  console.log(`\n${B}${G}Done.${X} UI: http://localhost:8787/live   API: curl http://localhost:8787/api/status`);
 }
 
 function pauseAgent() {

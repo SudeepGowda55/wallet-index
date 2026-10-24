@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = { agentRules: false, turbopack: { root: __dirname } };
 
 export default nextConfig;

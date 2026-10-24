@@ -1,6 +1,6 @@
 # Live demo run-of-show (≈4 minutes, split screen)
 
-**Left:** terminal. **Right:** browser at `http://localhost:8787/`.
+**Left:** terminal. **Right:** browser at `http://localhost:8787/live`.
 Every action fired from the terminal shows up in the UI as a pop-up and a highlighted row labelled **"from terminal / API"**; every UI click shows up in the terminal/API.
 
 Before going on stage: `./scripts/start_local.sh` (or the mainnet deployment), open the UI, `clear` the terminal.

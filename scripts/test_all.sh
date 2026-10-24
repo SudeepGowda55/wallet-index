@@ -18,5 +18,5 @@ echo "== terminal demo"
 (cd frontend && NETWORK=local INTERVAL=${INTERVAL:-30} nohup node --import tsx scripts/agent.ts >> ../.run/agent.log 2>&1 & echo $! > ../.run/agent.pid)
 echo
 [ $FAIL = 0 ] && echo "ALL CHECKS PASSED." || echo "SOME CHECKS FAILED (see above)."
-echo "Environment still running -> UI: http://localhost:${UI_PORT:-8787}/   stop: ./scripts/stop_local.sh"
+echo "Environment still running -> UI: http://localhost:${UI_PORT:-8787}/live   stop: ./scripts/stop_local.sh"
 exit $FAIL

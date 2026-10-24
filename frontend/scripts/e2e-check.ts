@@ -24,7 +24,7 @@ const check = (name: string, cond: any, detail = "") => { okAll &&= !!cond; cons
   const rep1 = await count("Replaced"), fill1 = await count("Filled");
   check("hook Replaced events on-chain for every retune", rep1 - rep0 >= decs.length, `(+${rep1 - rep0})`);
   check("hook Filled events on-chain for the swaps", fill1 - fill0 >= 4, `(+${fill1 - fill0})`);
-  for (const p of ["/", "/deployments/local.json", "/deployments/local.state.json"]) { const s = await fetch(UI + p).then(x => x.status).catch(() => 0); check(`UI serves ${p}`, s === 200); }
+  for (const p of ["/", "/live", "/deployments/local.json", "/deployments/local.state.json"]) { const s = await fetch(UI + p).then(x => x.status).catch(() => 0); check(`UI serves ${p}`, s === 200); }
   try {
     const s = await (await fetch(UI + "/api/status")).json(); check("API /api/status returns block + prices", s.block > 0 && s.walletsPriceEthUsd > 0);
     const w = await (await fetch(UI + "/api/wallets?usd=500")).json(); check("API /api/wallets returns 3 wallets", w.wallets?.length === 3);

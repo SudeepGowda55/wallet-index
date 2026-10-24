@@ -27,5 +27,5 @@ cat > deployments/$NETNAME.json <<JSON
  "trader":"$([ -n "${TRADER_PK:-}" ] && cast wallet address $TRADER_PK || echo "")"}
 JSON
 echo "hook $HOOK | swapper $SWAPPER -> deployments/$NETNAME.json (no keys written)"
-echo "UI + API: (cd frontend && npm run build && WI_ROOT=$(pwd) npx next start -p 8787), then open http://localhost:8787/?net=$NETNAME"
+echo "UI + API: (cd frontend && npm run build && WI_ROOT=$(pwd) npx next start -p 8787), then open http://localhost:8787/live?net=$NETNAME"
 echo "run the agent:  set -a; source .env; set +a; (cd frontend && NETWORK=$NETNAME npx tsx scripts/agent.ts)"
